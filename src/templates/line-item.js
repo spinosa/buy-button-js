@@ -1,5 +1,5 @@
 const lineItemTemplates = {
-  image: '<div class="{{data.classes.lineItem.image}}" style="background-image: url({{data.lineItemImage}})" data-element="lineItem.image"></div>',
+  image: '<div class="{{data.classes.lineItem.image}}" style="background-image: url({{#data._imageUrl}}{{data._imageUrl}}{{/data._imageUrl}}{{^data._imageUrl}}{{data.lineItemImage}}{{/data._imageUrl}})" data-element="lineItem.image"></div>',
   variantTitle: '<div class="{{data.classes.lineItem.variantTitle}}" data-element="lineItem.variantTitle">{{data.variantTitle}}</div>',
 
   title: '<span class="{{data.classes.lineItem.itemTitle}}" data-element="lineItem.itemTitle">{{data.title}}</span>',
@@ -21,6 +21,12 @@ const lineItemTemplates = {
                           </div>
                         {{/data.discounts}}
                       </div>`,
+  customAttributes: `{{#data.formattedCustomAttributes}}
+                      <div class="{{data.classes.lineItem.customAttributes}}" data-element="lineItem.customAttributes">
+                        <span class="{{data.classes.lineItem.customAttributesKey}}">{{key}}:</span>
+                        <span class="{{data.classes.lineItem.customAttributesValue}}">{{value}}</span>
+                      </div>
+                    {{/data.formattedCustomAttributes}}`,
   quantity: `<div class="{{data.classes.lineItem.quantity}}" data-element="lineItem.quantity">
               <button class="{{data.classes.lineItem.quantityButton}} {{data.classes.lineItem.quantityDecrement}}" type="button" data-line-item-id="{{data.id}}" data-element="lineItem.quantityDecrement">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M4 7h8v2H4z"/></svg><span class="visuallyhidden">{{data.text.quantityDecrementAccessibilityLabel}}</span>

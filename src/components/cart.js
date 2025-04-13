@@ -117,6 +117,25 @@ export default class Cart extends Component {
       data.text = this.config.lineItem.text;
       data.lineItemImage = this.imageForLineItem(data);
       data.variantTitle = data.variant.title === 'Default Title' ? '' : data.variant.title;
+      
+      // Process custom attributes for display
+      if (data.customAttributes && data.customAttributes.length) {
+        // Extract _imageUrl if present
+        const imageUrlAttr = data.customAttributes.find(attr => attr.key === '_imageUrl');
+        if (imageUrlAttr) {
+          data._imageUrl = imageUrlAttr.value;
+        }
+        
+        data.formattedCustomAttributes = data.customAttributes
+          .filter(attr => !attr.key.startsWith('_'))
+          .map(attr => {
+            return {
+              key: attr.key,
+              value: attr.value
+            };
+          });
+      }
+      
       return acc + this.childTemplate.render({data}, (output) => `<li id="${lineItem.id}" class=${this.classes.lineItem.lineItem}>${output}</li>`);
     }, '');
   }
@@ -419,8 +438,10 @@ export default class Cart extends Component {
    * add variant to cart.
    * @param {Object} variant - variant object.
    * @param {Number} [quantity=1] - quantity to be added.
+   * @param {Boolean} [openCart=true] - whether to open cart after adding or not.
+   * @param {Array} [customAttributes=[]] - array of custom attribute key-value pairs.
    */
-  addVariantToCart(variant, quantity = 1, openCart = true) {
+  addVariantToCart(variant, quantity = 1, openCart = true, customAttributes = []) {
     if (quantity <= 0) {
       return null;
     }
@@ -428,6 +449,9 @@ export default class Cart extends Component {
       this.open();
     }
     const lineItem = {variantId: variant.id, quantity};
+    if (customAttributes && customAttributes.length) {
+      lineItem.customAttributes = customAttributes;
+    }
     if (this.model) {
       return this.props.client.checkout.addLineItems(this.model.id, [lineItem]).then((checkout) => {
         this.model = checkout;

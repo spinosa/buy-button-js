@@ -254,6 +254,7 @@ const defaults = {
       quantityIncrement: true,
       quantityDecrement: true,
       quantityInput: true,
+      customAttributes: true,
     },
     order: [
       'image',
@@ -261,6 +262,7 @@ const defaults = {
       'variantTitle',
       'price',
       'priceWithDiscounts',
+      'customAttributes',
       'quantity',
     ],
     classes: {
@@ -278,6 +280,9 @@ const defaults = {
       quantityButton: 'shopify-buy__btn--seamless',
       quantityIncrement: 'shopify-buy__quantity-increment',
       quantityDecrement: 'shopify-buy__quantity-decrement',
+      customAttributes: 'shopify-buy__cart-item__custom-attributes',
+      customAttributesKey: 'shopify-buy__cart-item__custom-attributes-key',
+      customAttributesValue: 'shopify-buy__cart-item__custom-attributes-value',
     },
     text: {
       quantityInputAccessibilityLabel: 'Quantity',

@@ -697,7 +697,9 @@ describe('Cart class', () => {
     const variant = {
       id: variantId,
     };
+    const customAttributes = [{key: 'color', value: 'blue'}];
     const lineItem = {variantId, quantity};
+    const lineItemWithCustomAttrs = {variantId, quantity, customAttributes};
     let cartOpenStub;
     let setFocusStub;
     let addLineItemsStub;
@@ -826,6 +828,36 @@ describe('Cart class', () => {
         return cart.addVariantToCart(variant, quantity).then(() => {
           assert.notCalled(setFocusStub);
         });
+      });
+    });
+
+    it('includes customAttributes in lineItem if provided', () => {
+      cart.model = {
+        id: modelId,
+      };
+
+      return cart.addVariantToCart(variant, quantity, true, customAttributes).then(() => {
+        assert.calledWith(addLineItemsStub, modelId, [lineItemWithCustomAttrs]);
+      });
+    });
+
+    it('does not include customAttributes in lineItem if empty array', () => {
+      cart.model = {
+        id: modelId,
+      };
+
+      return cart.addVariantToCart(variant, quantity, true, []).then(() => {
+        assert.calledWith(addLineItemsStub, modelId, [lineItem]);
+      });
+    });
+
+    it('does not include customAttributes in lineItem if not provided', () => {
+      cart.model = {
+        id: modelId,
+      };
+
+      return cart.addVariantToCart(variant, quantity).then(() => {
+        assert.calledWith(addLineItemsStub, modelId, [lineItem]);
       });
     });
   });
