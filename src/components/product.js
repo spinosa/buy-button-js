@@ -674,18 +674,24 @@ export default class Product extends Component {
       } else {
         checkoutWindow = window;
       }
-      const input = {
-        lineItems: [
-          {
-            variantId: this.selectedVariant.id,
-            quantity: this.selectedQuantity,
-            customAttributes: this.customAttributes || [],
-          },
-        ],
-      };
-
-      this.props.client.checkout.create(input).then((checkout) => {
-        checkoutWindow.location = checkout.webUrl;
+      
+      // Cannot create a new checkout with customAttributes
+      // First create an empty checkout
+      this.props.client.checkout.create().then((checkout) => {
+        // Then add the lineItem with or without customAttributes
+        const lineItem = {
+          variantId: this.selectedVariant.id,
+          quantity: this.selectedQuantity,
+        };
+        
+        if (this.options.customAttributes && this.options.customAttributes.length) {
+          lineItem.customAttributes = this.options.customAttributes;
+        }
+        
+        return this.props.client.checkout.addLineItems(checkout.id, [lineItem])
+          .then((checkoutWithItems) => {
+            checkoutWindow.location = checkoutWithItems.webUrl;
+          });
       });
     }
   }

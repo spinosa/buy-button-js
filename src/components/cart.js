@@ -452,7 +452,9 @@ export default class Cart extends Component {
     if (customAttributes && customAttributes.length) {
       lineItem.customAttributes = customAttributes;
     }
+    
     if (this.model) {
+      // Add line items to existing checkout
       return this.props.client.checkout.addLineItems(this.model.id, [lineItem]).then((checkout) => {
         this.model = checkout;
         this.updateCache(this.model.lineItems);
@@ -464,21 +466,23 @@ export default class Cart extends Component {
         return checkout;
       });
     } else {
-      const input = {
-        lineItems: [
-          lineItem,
-        ],
-      };
-      return this.props.client.checkout.create(input).then((checkout) => {
+      // Cannot create a new checkout with customAttributes
+      // First create an empty checkout
+      return this.props.client.checkout.create().then((checkout) => {
         localStorage.setItem(this.localStorageCheckoutKey, checkout.id);
         this.model = checkout;
-        this.updateCache(this.model.lineItems);
-        this.view.render();
-        this.toggles.forEach((toggle) => toggle.view.render());
-        if (!openCart) {
-          this.setFocus();
-        }
-        return checkout;
+        
+        // Then add the lineItem (which may or may not have customAttributes)
+        return this.props.client.checkout.addLineItems(checkout.id, [lineItem]).then((checkoutWithItems) => {
+          this.model = checkoutWithItems;
+          this.updateCache(this.model.lineItems);
+          this.view.render();
+          this.toggles.forEach((toggle) => toggle.view.render());
+          if (!openCart) {
+            this.setFocus();
+          }
+          return checkoutWithItems;
+        });
       });
     }
   }
