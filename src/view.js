@@ -18,7 +18,17 @@ export default class View {
   }
 
   init() {
+    // Check for existing element with data-turbo-permanent
+    const existingElement = document.querySelector(`[data-turbo-permanent="shopify-buy-${this.component.typeKey}"]`);
+    if (existingElement) {
+      this.component.node = existingElement;
+    }
     this.component.node.className += ` shopify-buy-frame shopify-buy-frame--${this.component.typeKey}`;
+    if (this.component.typeKey === 'cart' || this.component.typeKey === 'toggle') {
+      this.component.node.setAttribute('data-turbo-permanent', `shopify-buy-${this.component.typeKey}`);
+    }
+  
+
     if (this.iframe || !this.component.options.iframe) {
       return Promise.resolve(this.iframe);
     }
