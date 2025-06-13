@@ -1,6 +1,6 @@
 {
   "name": "@shopify/buy-button-js",
-  "version": "3.0.0",
+  "version": "3.0.2-TEMP-REVERT-TO-Shopify_Buy_v2",
   "browserslist": [
     "last 2 Chrome versions",
     "last 2 Firefox versions",
@@ -104,7 +104,7 @@
     "morphdom": "2.6.1",
     "mustache": "3.0.1",
     "sass": "1.69.0",
-    "shopify-buy": "3.0.3",
+    "shopify-buy": "2.20.0",
     "uglify-js": "3.16.3"
   }
 }
